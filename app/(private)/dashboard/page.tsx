@@ -1,0 +1,79 @@
+"use client";
+
+import {
+  TaskAnalysis,
+  TaskCard,
+  TaskSchedule,
+  TaskTimeLine,
+  TaskTimeTracker,
+  TaskToday,
+} from "@/components/tasking-cards";
+import { useAnalysisDashbaord } from "@/lib/requests";
+import { ArrowUpRight } from "lucide-react";
+
+export default function Dashboard() {
+  const { data: metrics } = useAnalysisDashbaord();
+
+  const getTaskCardData = (taskCount: number) => [
+    {
+      title: "Productive",
+      number: taskCount >= 10 ? taskCount : 0,
+      color: "bg-tasking-primary-00",
+    },
+    {
+      title: "Middle",
+      number: taskCount >= 1 && taskCount <= 6 ? taskCount : 0,
+      color: "bg-tasking-primary-10",
+    },
+    {
+      title: "Idle",
+      number: taskCount === 0 ? 100 : 0,
+      color: "bg-tasking-primary-40",
+    },
+  ];
+
+  const TaskCardData = metrics ? getTaskCardData(metrics.taskCount ?? 0) : [];
+
+  return (
+    <div className="grid gap-4">
+      <section className="grid grid-cols-[1fr_2fr] gap-4">
+        <article className="grid gap-4">
+          <div className="grid grid-cols-[1fr_1fr] gap-4">
+            <TaskCard
+              item={TaskCardData}
+              title="Tasks"
+              numbers={metrics?.taskCount ?? 0}
+              description="tasks"
+              footer="progress"
+              icon={ArrowUpRight}
+            />
+
+            <TaskCard
+              title="Core Teams"
+              item={metrics?.teamMembersCount ?? 0}
+              numbers={metrics?.teamMembersCount ?? 0}
+              description="member"
+              footer="avatar"
+              icon={ArrowUpRight}
+            />
+          </div>
+
+          <TaskAnalysis />
+        </article>
+        <article className="grid">
+          <TaskTimeLine />
+        </article>
+      </section>
+
+      <section className="grid grid-cols-[1fr_2fr] gap-4">
+        <article className="grid">
+          <TaskSchedule />
+        </article>
+        <article className="grid grid-cols-2 gap-4">
+          <TaskTimeTracker />
+          <TaskToday />
+        </article>
+      </section>
+    </div>
+  );
+}
