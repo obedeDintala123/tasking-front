@@ -1,35 +1,33 @@
-Tasking
+# Tasking
 
-Tasking é um web app moderno de gestão de tarefas e equipes, focado em produtividade e colaboração.
+**Tasking** é um web app moderno de **gestão de tarefas e equipes**, focado em produtividade, colaboração e uma experiência limpa de dashboard.
 
-Getting Started
+---
+
+## ✨ Funcionalidades
+
+- Gestão de tarefas  
+- Colaboração em equipe  
+- Interface moderna e responsiva  
+
+---
+
+## 🚀 Começando
 
 Execute o servidor de desenvolvimento:
 
+```bash
 npm run dev
-# ou yarn dev
-# ou pnpm dev
-# ou bun dev
+# ou yarn
+# ou pnpm
+# ou bun
+```
 
 
-Abra no navegador:
-👉 http://localhost:3000
+### Abra no navegador:
+http://localhost:3000
 
-Edite o arquivo app/page.tsx para começar. As mudanças são aplicadas automaticamente.
+### 🌍 Deploy
 
-Tech Stack
-
-Next.js
-
-React
-
-TypeScript
-
-Tailwind CSS
-
-shadcn/ui
-
-Deploy
-
-Deploy fácil e rápido com a Vercel:
+Deploy simples e rápido com a Vercel:
 https://vercel.com/new?filter=next.js
