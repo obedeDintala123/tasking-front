@@ -3,12 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font-poppins);
   color: var(--color-tasking-primary-40);
+  overflow-x: hidden;
 }
 
 @theme {

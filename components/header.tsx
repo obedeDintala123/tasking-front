@@ -37,7 +37,7 @@ export function Header() {
           <Button onClick={() => router.push("/auth/login")} variant="ghost" className="hidden md:inline-flex">
             Sign In
           </Button>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">Get Started</Button>
+          <Button onClick={() => router.push("/auth/login")} className="bg-primary hover:bg-primary/90 text-primary-foreground">Get Started</Button>
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
           </Button>

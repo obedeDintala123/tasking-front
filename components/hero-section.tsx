@@ -3,8 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { DashboardMockup } from "./dashboard-mockup";
+import { useRouter } from "next/navigation";
 
 export function HeroSection() {
+  const router = useRouter();
   return (
     <section className="container mx-auto px-4 pt-20 pb-12 lg:pt-32 lg:pb-20">
       <div className="flex flex-col items-center text-center">
@@ -18,6 +20,7 @@ export function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Button
+              onClick={() => router.push("/auth/login")}
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-12 text-base rounded-2xl"
             >
