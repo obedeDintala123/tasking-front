@@ -246,7 +246,7 @@ function TaskBlock({ task }: { task: Task }) {
             <span className="px-2 py-0.5 rounded bg-muted">{labels(task.status)}</span>
 
             <span className="px-2 py-0.5 rounded bg-muted">
-            {labels(task.priority)}
+            {labels(task.priority!)}
             </span>
           </div>
         </div>

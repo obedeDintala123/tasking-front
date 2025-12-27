@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Filter, Search } from "lucide-react";
+import { Calendar, Filter, Plus, Search } from "lucide-react";
 import { Input } from "./ui/input";
 
 export function FilterBar() {

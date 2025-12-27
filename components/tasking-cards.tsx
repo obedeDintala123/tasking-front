@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  priorityColors,
-  ProjectCardProps,
-  TaskCardData,
-  TaskCardProps,
-  TaskItemProps,
-  TaskSectionProps,
-  variantClasses,
-  variantProgressClasses,
-} from "@/types/types";
+import { priorityColors, TaskCardProps } from "@/types/types";
 import {
   Card,
   CardContent,
@@ -22,7 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   ArrowUpRight,
   CalendarIcon,
-  Clock,
   Copy,
   MoreVertical,
   Pause,
@@ -96,9 +86,9 @@ export const TaskCard = ({
               </Avatar>
             ))
           ) : (
-           <Button className="text-sm flex items-center justify-center rounded-full p-2 bg-gray-100 w-full text-tasking-primary-40">
-            <Plus className="size-4 mr-2" /> Add Member
-           </Button>
+            <Button className="text-sm flex items-center justify-center rounded-full p-2 bg-gray-100 w-full text-tasking-primary-40">
+              <Plus className="size-4 mr-2" /> Add Member
+            </Button>
           )}
         </CardFooter>
       )}
@@ -180,7 +170,7 @@ export const TaskAnalysis = () => {
 };
 
 export const TaskTimeLine = () => {
-  const {data: tasks} = useTasks();
+  const { data: tasks } = useTasks();
 
   return (
     <Card className="overflow-hidden">
@@ -230,15 +220,19 @@ export const TaskTimeLine = () => {
             </div>
 
             {tasks?.map((task, i) => {
-            
               const hourWidth = 80;
               const left = parseInt(task.startHour) * hourWidth;
-              const width = (parseInt(task.endHour) - parseInt(task.startHour)) * hourWidth;
+              const width =
+                (parseInt(task.endHour) - parseInt(task.startHour)) * hourWidth;
+
+              const priorityKey = task.priority ?? "low";
+              const priorityClass =
+                priorityColors[priorityKey as keyof typeof priorityColors];
 
               return (
                 <div
                   key={i}
-                  className={`absolute h-12 text-white text-xs rounded-full flex items-center justify-between px-2 ${priorityColors[task.priority]}`}
+                  className={`absolute h-12 text-white text-xs rounded-full flex items-center justify-between px-2 ${priorityClass}`}
                   style={{
                     left,
                     width,
@@ -442,11 +436,7 @@ export const TaskToday = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Progress
-              value={tasks[0].progress}
-              variant="yellow"
-              className="flex-1 h-2"
-            />
+            <Progress value={tasks[0].progress} className="flex-1 h-2" />
             <span className="text-sm font-medium text-muted-foreground min-w-[3ch]">
               {tasks[0].progress}%
             </span>
@@ -483,11 +473,7 @@ export const TaskToday = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Progress
-              value={tasks[1].progress}
-              variant="yellow"
-              className="flex-1 h-2"
-            />
+            <Progress value={tasks[1].progress} className="flex-1 h-2" />
             <span className="text-sm font-medium text-muted-foreground min-w-[3ch]">
               {tasks[1].progress}%
             </span>

@@ -32,19 +32,11 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { labels } from "@/lib/utils";
 
-
-const PRIORITY_COLORS = {
-  low: "#ffd251",
-  creative: "#f090f1",
-  urgent: "#ff9f69",
-  default: "#8098f0",
-};
-
 export default function MyBoardPage() {
   const { data: tasks = [], refetch } = useTasks();
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
   const [open, setOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
 
   const getTasksByStatus = (status: Status) => {
     return tasks?.filter((task) => task.status === status);
@@ -59,8 +51,7 @@ export default function MyBoardPage() {
   };
 
   const handleEdit = (taskId: string) => {
-    setSelectedTask(tasks.find((task) => task.id === taskId));
-
+    setSelectedTask(tasks.find((task) => task.id === taskId) ?? undefined);
     setOpen(true);
   };
 
@@ -343,7 +334,6 @@ function TaskCard({
       {/* Colored Accent */}
       <div
         className="absolute left-0 top-0 h-full w-1"
-        style={{ backgroundColor: PRIORITY_COLORS[task.priority] }}
       />
 
       <div className="p-4 pl-5">
@@ -365,7 +355,7 @@ function TaskCard({
                   : "bg-tasking-primary-30"
               }`}
             >
-              {labels(task.priority)}
+              {labels(task.priority!)}
             </Badge>
           </div>
           <DropdownMenu>

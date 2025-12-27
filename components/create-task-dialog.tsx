@@ -48,7 +48,17 @@ const TaskSchema = z.object({
 
 type TaskFormData = z.infer<typeof TaskSchema>;
 
-export function CreateTaskDialog({ open, setOpen, isEditing = false, task }: { open: boolean; setOpen: (value: boolean) => void; isEditing?: boolean; task?: Task }){
+export function CreateTaskDialog({
+  open,
+  setOpen,
+  isEditing = false,
+  task,
+}: {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+  isEditing?: boolean;
+  task?: Task;
+}) {
   const { refetch } = useTasks();
   const {
     register,
@@ -70,7 +80,7 @@ export function CreateTaskDialog({ open, setOpen, isEditing = false, task }: { o
     },
   });
 
-  const createTask = useMutation({
+  const createTask = useMutation<void, unknown, TaskFormData>({
     mutationKey: ["createTask"],
     mutationFn: async (data: TaskFormData) => {
       await api.post("/task", data);
@@ -89,10 +99,10 @@ export function CreateTaskDialog({ open, setOpen, isEditing = false, task }: { o
     },
   });
 
-  const updateTask = useMutation({
+  const updateTask = useMutation<void, unknown, TaskFormData>({
     mutationKey: ["updateTask"],
-    mutationFn: async (data) => {
-      await api.patch(`/task/${task.id}`, data);
+    mutationFn: async (data: TaskFormData) => {
+      await api.patch(`/task/${task?.id}`, data);
     },
 
     onSuccess: () => {
@@ -109,15 +119,22 @@ export function CreateTaskDialog({ open, setOpen, isEditing = false, task }: { o
   });
 
   useEffect(() => {
+    const startDateValue =
+      isEditing && task && task.startDate
+        ? new Date(task.startDate)
+        : new Date();
+    const endDateValue =
+      isEditing && task && task.endDate ? new Date(task.endDate) : new Date();
+
     reset({
-      title: isEditing ? task.title : "",
-      description: isEditing ? task.description : "",
-      status: isEditing ? task.status : Status.TO_DO,
-      priority: isEditing ? task.priority : Priority.LOW,
-      startDate: isEditing ? new Date(task.startDate) : new Date(),
-      endDate: isEditing ? new Date(task.endDate) : new Date(),
-      startHour: isEditing ? task.startHour : "",
-      endHour: isEditing ? task.endHour : "",
+      title: isEditing ? task?.title : "",
+      description: isEditing ? task?.description : "",
+      status: isEditing ? task?.status : Status.TO_DO,
+      priority: isEditing ? task?.priority : Priority.LOW,
+      startDate: startDateValue,
+      endDate: endDateValue,
+      startHour: isEditing ? task?.startHour : "",
+      endHour: isEditing ? task?.endHour : "",
     });
   }, [isEditing, task, reset]);
 
