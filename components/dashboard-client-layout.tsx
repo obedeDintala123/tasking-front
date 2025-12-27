@@ -1,7 +1,7 @@
 "use client";
 
 import { useMe } from "@/lib/requests";
-import { Loading } from "./loading";
+import Loading from "@/app/loading";
 import { Providers } from "@/hooks/provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";

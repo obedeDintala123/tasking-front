@@ -10,9 +10,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { Axios, AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 const loginSchema = z.object({
   email: z.string().email(),
