@@ -13,6 +13,7 @@ import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { setCookie } from "cookies-next";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -36,17 +37,18 @@ export default function LoginPage() {
   const loginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: async (data: LoginFormData) => {
-      await api.post("/auth/login", data);
+      const response = await api.post("/auth/login", data);
+      return response.data;
     },
 
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setCookie("token", data.token, { path: "/" });
       toast.success("Login successful");
       router.push("/dashboard");
     },
 
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message ?? "Login failed");
-      console.log(error);
     },
   });
 
@@ -82,7 +84,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form method="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email Field */}
           <div className="space-y-2">
             <label

@@ -50,7 +50,6 @@ export default function RegisterPage() {
         return toast.error("Registration failed");
 
       toast.error(error.response?.data?.message ?? "Registration failed");
-      console.log(error);
     },
   });
 
