@@ -1,16 +1,12 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Upload } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Upload } from "lucide-react";
 
-export function ProfileSettings() {
-  const [name, setName] = useState("Sarah Johnson")
-  const [email, setEmail] = useState("sarah.johnson@example.com")
-
+export function ProfileSettings({ user }) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 transition-shadow hover:shadow-md">
       <h2 className="text-xl font-semibold mb-6" style={{ color: "#323339" }}>
@@ -22,7 +18,12 @@ export function ProfileSettings() {
         <div className="flex items-center gap-4">
           <Avatar className="h-20 w-20">
             <AvatarImage src="/placeholder.svg?height=80&width=80" />
-            <AvatarFallback style={{ backgroundColor: "#8098f0", color: "white" }}>SJ</AvatarFallback>
+            <AvatarFallback
+              style={{ backgroundColor: "#8098f0", color: "white" }}
+            >
+              {user?.firstName?.charAt(0)}
+              {user?.lastName?.charAt(0)}
+            </AvatarFallback>
           </Avatar>
           <Button
             variant="outline"
@@ -42,8 +43,8 @@ export function ProfileSettings() {
           </Label>
           <Input
             id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            disabled
+            value={user?.firstName}
             className="transition-all focus:ring-2"
             style={{ borderColor: "#e5e5e5" }}
           />
@@ -55,23 +56,32 @@ export function ProfileSettings() {
             Email
           </Label>
           <Input
+            disabled
             id="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={user?.email}
             className="transition-all focus:ring-2"
             style={{ borderColor: "#e5e5e5" }}
           />
         </div>
 
         {/* Save Button */}
-        <Button
-          className="w-full transition-all hover:opacity-90"
-          style={{ backgroundColor: "#8098f0", color: "white" }}
-        >
-          Save Changes
-        </Button>
+        <div className="grid grid-cols-[2fr_1fr] gap-2 ">
+          <Button
+            className="w-full transition-all hover:opacity-90 cursor-pointer"
+            style={{ backgroundColor: "#8098f0", color: "white" }}
+          >
+            Edit Profile
+          </Button>
+
+          <Button
+            disabled
+            className="w-full cursor-pointer transition-all hover:opacity-90 bg-transparent border border-tasking-primary-00 text-tasking-primary-00"
+          >
+            Save Changes
+          </Button>
+        </div>
       </div>
     </div>
-  )
+  );
 }

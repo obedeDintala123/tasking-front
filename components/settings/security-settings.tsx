@@ -69,7 +69,7 @@ export function SecuritySettings() {
         <Button
           onClick={logout}
           variant="outline"
-          className="w-full gap-2 transition-all hover:bg-[#ff9f69] hover:text-white hover:border-[#ff9f69] bg-transparent"
+          className="w-full gap-2 transition-all  hover:bg-transparent cursor-pointer hover:border-[#ff9f69] bg-transparent"
           style={{ borderColor: "#ff9f69", color: "#ff9f69" }}
         >
           <LogOut className="h-4 w-4" />

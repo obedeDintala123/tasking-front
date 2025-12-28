@@ -153,7 +153,7 @@ export function CreateTaskDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[550px] bg-[#f8f8f8] border-[#323339]/20">
+      <DialogContent className="sm:max-w-[550px] bg-[#f8f8f8] border-[#323339]/20 overflow-y-auto max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="text-[#323339] text-xl">
             Create New Task
@@ -196,7 +196,7 @@ export function CreateTaskDialog({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="status" className="text-[#323339] font-medium">
                 Status
@@ -263,7 +263,7 @@ export function CreateTaskDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* Start Date */}
             <div className="grid gap-2">
               <Label htmlFor="startDate" className="text-[#323339] font-medium">
@@ -331,7 +331,7 @@ export function CreateTaskDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* Start Hour */}
             <div className="grid gap-2">
               <Label htmlFor="startHour" className="text-[#323339] font-medium">

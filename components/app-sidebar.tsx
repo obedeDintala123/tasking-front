@@ -17,14 +17,8 @@ import {
   Clock,
   CalendarDays,
   Settings,
-  Send,
-  ArrowUpRight,
-  MessageCircle,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+
 import { useRouter } from "next/navigation";
 import { useMe } from "@/lib/requests";
 import Link from "next/link";
@@ -92,7 +86,6 @@ export function AppSidebar() {
                   >
                     <item.icon className="size-4" />
                     <span>{item.title}</span>
-              
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -104,7 +97,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 mt-auto">
         <Link
           href="/dashboard/settings"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-2 text-sm "
         >
           <Settings className="w-4 h-4" />
           <span>Settings</span>

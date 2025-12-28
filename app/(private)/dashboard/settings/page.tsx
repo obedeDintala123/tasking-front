@@ -1,16 +1,14 @@
-import type { Metadata } from "next"
-import { ProfileSettings } from "@/components/settings/profile-settings"
-import { AppearanceSettings } from "@/components/settings/appearance-settings"
-import { NotificationSettings } from "@/components/settings/notification-settings"
-import { SecuritySettings } from "@/components/settings/security-settings"
-import { PreferenceSettings } from "@/components/settings/preference-settings"
+"use client"
 
-export const metadata: Metadata = {
-  title: "Settings | Task Manager",
-  description: "Manage your account, preferences, and application behavior",
-}
+import { ProfileSettings } from "@/components/settings/profile-settings";
+import { AppearanceSettings } from "@/components/settings/appearance-settings";
+import { NotificationSettings } from "@/components/settings/notification-settings";
+import { SecuritySettings } from "@/components/settings/security-settings";
+import { PreferenceSettings } from "@/components/settings/preference-settings";
+import { useMe } from "@/lib/requests";
 
 export default function SettingsPage() {
+  const { data: user } = useMe();
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f8f8" }}>
       <div className="max-w-7xl mx-auto ">
@@ -26,7 +24,7 @@ export default function SettingsPage() {
 
         {/* Settings Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ProfileSettings />
+          <ProfileSettings user={user} />
           <AppearanceSettings />
           <NotificationSettings />
           <SecuritySettings />
@@ -34,5 +32,5 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
