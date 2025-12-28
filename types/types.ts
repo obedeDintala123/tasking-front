@@ -50,9 +50,9 @@ export interface TaskItemProps {
 }
 
 export const priorityColors = {
-  HIGH: "bg-red-500/20 text-red-400 border-red-500/30",
-  MEDIUM: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  LOW: "bg-green-300",
+  HIGH: "bg-tasking-primary-00",
+  MEDIUM: "bg-tasking-primary-10",
+  LOW: "bg-tasking-primary-30",
 };
 
 export interface Task {

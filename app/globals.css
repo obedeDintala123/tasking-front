@@ -13,7 +13,7 @@ body {
   box-sizing: border-box;
   font-family: var(--font-poppins);
   color: var(--color-tasking-primary-40);
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 @theme {

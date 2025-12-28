@@ -34,15 +34,16 @@ import { Progress } from "./ui/progress";
 import { useTasks } from "@/lib/requests";
 
 export const TaskCard = ({
+  loading,
   item: data,
   title,
   description,
   footer = "progress",
   icon: Icon,
   numbers,
-}: TaskCardProps) => {
+}: TaskCardProps & {loading?: boolean}) => {
   return (
-    <Card className="py-3">
+    <Card loading={loading} className="py-3">
       <div className="flex items-center justify-between px-4">
         <CardTitle>{title}</CardTitle>
         {Icon && (
@@ -96,7 +97,7 @@ export const TaskCard = ({
   );
 };
 
-export const TaskAnalysis = () => {
+export const TaskAnalysis = ({loading = false}) => {
   const chartData = [
     { day: "monday", tasks: 10, fill: "var(--color-tasking-primary-00)" },
     { day: "tuesday", tasks: 200, fill: "var(--color-tasking-primary-10)" },
@@ -132,7 +133,7 @@ export const TaskAnalysis = () => {
   } satisfies ChartConfig;
 
   return (
-    <Card>
+    <Card loading={loading}>
       <CardHeader>
         <CardTitle>Task Analysis</CardTitle>
       </CardHeader>
@@ -169,11 +170,11 @@ export const TaskAnalysis = () => {
   );
 };
 
-export const TaskTimeLine = () => {
+export const TaskTimeLine = ({loading = false}) => {
   const { data: tasks } = useTasks();
 
   return (
-    <Card className="overflow-hidden">
+    <Card loading={loading} className="overflow-hidden">
       <div className="flex items-center justify-between px-4">
         <div className="space-y-1">
           <CardTitle>Timeline</CardTitle>
@@ -259,7 +260,7 @@ export const TaskTimeLine = () => {
   );
 };
 
-export const TaskSchedule = () => {
+export const TaskSchedule = ({loading = false}) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const shedules = [
     {
@@ -274,7 +275,7 @@ export const TaskSchedule = () => {
   ];
 
   return (
-    <Card className="h-full">
+    <Card loading={loading} className="h-full">
       <div className="flex items-center justify-between px-6">
         <CardTitle>Schedules</CardTitle>
         <div className="place-items-center place-content-center rounded-full bg-gray-50 border w-10 h-10">
@@ -312,7 +313,7 @@ export const TaskSchedule = () => {
   );
 };
 
-export const TaskTimeTracker = () => {
+export const TaskTimeTracker = ({loading = false}) => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -347,7 +348,7 @@ export const TaskTimeTracker = () => {
   };
 
   return (
-    <Card className="bg-[#2a2d35] border-none text-white relative">
+    <Card loading={loading} className="bg-[#2a2d35] border-none text-white relative">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-normal text-gray-300">
@@ -394,7 +395,7 @@ export const TaskTimeTracker = () => {
   );
 };
 
-export const TaskToday = () => {
+export const TaskToday = ({loading = false}) => {
   const tasks = [
     {
       id: 1,
@@ -411,7 +412,7 @@ export const TaskToday = () => {
   ];
 
   return (
-    <Card className="overflow-hidden">
+    <Card loading={loading} className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
         <CardTitle className="text-xl font-semibold text-foreground">
           Task for today

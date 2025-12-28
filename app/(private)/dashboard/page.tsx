@@ -12,7 +12,7 @@ import { useAnalysisDashbaord } from "@/lib/requests";
 import { ArrowUpRight } from "lucide-react";
 
 export default function Dashboard() {
-  const { data: metrics } = useAnalysisDashbaord();
+  const { data: metrics, isLoading } = useAnalysisDashbaord();
 
   const getTaskCardData = (taskCount: number) => [
     {
@@ -35,11 +35,12 @@ export default function Dashboard() {
   const TaskCardData = metrics ? getTaskCardData(metrics.taskCount ?? 0) : [];
 
   return (
-    <div className="grid gap-4">
-      <section className="grid grid-cols-[1fr_2fr] gap-4">
+    <div className="grid gap-2 md:gap-4">
+      <section className="grid md:grid-cols-[1fr_2fr] gap-4">
         <article className="grid gap-4">
-          <div className="grid grid-cols-[1fr_1fr] gap-4">
+          <div className="grid md:grid-cols-[1fr_1fr] gap-4">
             <TaskCard
+              loading={isLoading}
               item={TaskCardData}
               title="Tasks"
               numbers={metrics?.taskCount ?? 0}
@@ -49,6 +50,7 @@ export default function Dashboard() {
             />
 
             <TaskCard
+              loading={isLoading}
               title="Core Teams"
               item={metrics?.teamMembersCount ?? 0}
               numbers={metrics?.teamMembersCount ?? 0}
@@ -58,20 +60,20 @@ export default function Dashboard() {
             />
           </div>
 
-          <TaskAnalysis />
+          <TaskAnalysis loading={isLoading} />
         </article>
         <article className="grid">
-          <TaskTimeLine />
+          <TaskTimeLine loading={isLoading} />
         </article>
       </section>
 
-      <section className="grid grid-cols-[1fr_2fr] gap-4">
+      <section className="grid md:grid-cols-[1fr_2fr] gap-4">
         <article className="grid">
-          <TaskSchedule />
+          <TaskSchedule loading={isLoading} />
         </article>
-        <article className="grid grid-cols-2 gap-4">
-          <TaskTimeTracker />
-          <TaskToday />
+        <article className="grid md:grid-cols-2 gap-4">
+          <TaskTimeTracker loading={isLoading} />
+          <TaskToday loading={isLoading} />
         </article>
       </section>
     </div>

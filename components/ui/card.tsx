@@ -1,17 +1,28 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+type CardProps = React.ComponentProps<"div"> & { loading?: boolean }
+
+function Card({ className, loading, children, ...props }: CardProps) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "relative bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
         className
       )}
       {...props}
-    />
+    >
+      {loading && (
+        <Skeleton className="absolute inset-0 rounded-xl" />
+      )}
+
+      <div className={cn(loading ? "opacity-0" : "opacity-100", "relative z-10 w-full")}>
+        {children}
+      </div>
+    </div>
   )
 }
 
@@ -90,3 +101,13 @@ export {
   CardDescription,
   CardContent,
 }
+
+function CardSkeleton({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <Card className={cn("h-40 relative overflow-hidden", className)}>
+      <Skeleton className="absolute inset-0 rounded-xl" />
+    </Card>
+  )
+}
+
+export { CardSkeleton }

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import "../../globals.css";
-import DashboardClientLayout from "@/components/dashboard-client-layout";
+import { Providers } from "@/hooks/provider";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { AppHeader } from "@/components/app-header";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Tasking - Dashboard",
@@ -12,5 +16,18 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <DashboardClientLayout>{children}</DashboardClientLayout>;
+  return (
+    <div>
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="flex-1 bg-tasking-background">
+          <AppHeader />
+          <div className="p-4 md:p-8">
+            <Providers>{children}</Providers>
+          </div>
+        </main>
+      </SidebarProvider>
+      <Toaster />
+    </div>
+  );
 }
