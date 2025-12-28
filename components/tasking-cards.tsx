@@ -43,23 +43,23 @@ export const TaskCard = ({
   numbers,
 }: TaskCardProps & {loading?: boolean}) => {
   return (
-    <Card loading={loading} className="py-3">
+    <Card loading={loading} className="py-4">
       <div className="flex items-center justify-between px-4">
         <CardTitle>{title}</CardTitle>
         {Icon && (
           <div className="p-2 rounded-full flex items-center justify-center bg-gray-100">
             <Icon className="size-4" />
-          </div>
+          </div> 
         )}
       </div>
 
-      <CardContent className="flex items-end gap-2">
+      <CardContent className="flex items-end gap-2 pt-3">
         <span className="text-2xl">{numbers}</span>
         <span className="text-sm text-gray-500">{description}</span>
       </CardContent>
 
       {footer === "progress" ? (
-        <CardFooter className="flex items-center justify-between">
+        <CardFooter className="flex items-center justify-between pt-3">
           <div className="w-full">
             <div className="flex w-full h-2 gap-2">
               {data?.map((item, i) => (
@@ -78,7 +78,7 @@ export const TaskCard = ({
           </div>
         </CardFooter>
       ) : (
-        <CardFooter>
+        <CardFooter className="flex items-center gap-2 pt-3">
           {data?.length > 0 ? (
             data?.map((member, i) => (
               <Avatar key={i} className="w-8 h-8 -ml-2">
@@ -363,13 +363,14 @@ export const TaskTimeTracker = ({loading = false}) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center">
+
+      <CardContent className="mt-20 flex flex-col items-center justify-center">
         <div className="text-5xl font-light tracking-wider tabular-nums">
           {formatTime(time)}
         </div>
       </CardContent>
 
-      <CardFooter className="absolute bottom-6 left-1/4 flex justify-center">
+      <CardFooter className="mt-20 w-full flex items-center justify-center">
         <div className="flex items-center gap-4">
           <Button
             onClick={handlePauseResume}
@@ -445,7 +446,7 @@ export const TaskToday = ({loading = false}) => {
         </div>
 
         {/* Meeting Badge */}
-        <div className="relative bg-indigo-500 rounded-full py-4 px-6 flex items-center gap-4">
+        {/* <div className="relative bg-indigo-500 rounded-full py-4 px-6 flex items-center gap-4">
           <div className="bg-slate-900 rounded-full w-12 h-12 flex flex-col items-center justify-center text-white flex-shrink-0">
             <span className="text-xl font-bold leading-none">8</span>
             <span className="text-xs leading-none">Tue</span>
@@ -461,7 +462,7 @@ export const TaskToday = ({loading = false}) => {
               <Copy className="h-5 w-5" />
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Second Task */}
         <div className="space-y-3">

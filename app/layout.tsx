@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/hooks/provider";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 
 const poppins = Poppins({
@@ -35,6 +36,7 @@ export default function RootLayout({
       >
         <Providers>{children}</Providers>
         <Toaster richColors />
+        <Analytics />
       </body>
     </html>
   );
