@@ -1,13 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Lock, LogOut } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Lock, LogOut } from "lucide-react";
+import { deleteCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 
 export function SecuritySettings() {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
+  const router = useRouter();
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const logout = () => {
+    deleteCookie("token");
+    router.refresh();
+    router.push("/auth/login");
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 transition-shadow hover:shadow-md">
@@ -30,12 +38,22 @@ export function SecuritySettings() {
         </div>
 
         {/* Two-Factor Authentication */}
-        <div className="flex items-center justify-between py-4 border-t border-b" style={{ borderColor: "#f0f0f0" }}>
+        <div
+          className="flex items-center justify-between py-4 border-t border-b"
+          style={{ borderColor: "#f0f0f0" }}
+        >
           <div className="flex-1">
-            <Label htmlFor="2fa" className="cursor-pointer font-medium" style={{ color: "#323339" }}>
+            <Label
+              htmlFor="2fa"
+              className="cursor-pointer font-medium"
+              style={{ color: "#323339" }}
+            >
               Two-Factor Authentication
             </Label>
-            <p className="text-xs mt-1" style={{ color: "#323339", opacity: 0.6 }}>
+            <p
+              className="text-xs mt-1"
+              style={{ color: "#323339", opacity: 0.6 }}
+            >
               Add an extra layer of security to your account
             </p>
           </div>
@@ -49,6 +67,7 @@ export function SecuritySettings() {
 
         {/* Logout Button */}
         <Button
+          onClick={logout}
           variant="outline"
           className="w-full gap-2 transition-all hover:bg-[#ff9f69] hover:text-white hover:border-[#ff9f69] bg-transparent"
           style={{ borderColor: "#ff9f69", color: "#ff9f69" }}
@@ -58,5 +77,5 @@ export function SecuritySettings() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
