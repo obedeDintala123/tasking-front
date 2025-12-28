@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
 
-export function ProfileSettings({ user }) {
+export function ProfileSettings({ user }: { user: any }) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 transition-shadow hover:shadow-md">
       <h2 className="text-xl font-semibold mb-6" style={{ color: "#323339" }}>

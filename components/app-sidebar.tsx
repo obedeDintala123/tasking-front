@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
@@ -22,6 +23,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useMe } from "@/lib/requests";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const menuItems = [
   {
@@ -50,6 +52,8 @@ const menuItems = [
 export function AppSidebar() {
   const router = useRouter();
   const { data: user } = useMe();
+  const { toggleSidebar } = useSidebar();
+  const isMobile = useIsMobile();
 
   return (
     <Sidebar>
@@ -72,24 +76,48 @@ export function AppSidebar() {
           </div>
 
           <SidebarGroupContent>
-            <SidebarMenu className="gap-2">
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    onClick={() => router.push(item.url)}
-                    isActive={item.isActive}
-                    className={
-                      item.isActive
-                        ? "bg-gray-900 text-white hover:bg-gray-900 hover:text-white"
-                        : "hover:bg-gray-100"
-                    }
-                  >
-                    <item.icon className="size-4" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+            {isMobile ? (
+              <SidebarMenu className="gap-2">
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      onClick={() => {
+                        router.push(item.url);
+                        toggleSidebar();
+                      }}
+                      isActive={item.isActive}
+                      className={
+                        item.isActive
+                          ? "bg-gray-900 text-white hover:bg-gray-900 hover:text-white"
+                          : "hover:bg-gray-100"
+                      }
+                    >
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            ) : (
+              <SidebarMenu className="gap-2">
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      onClick={() => router.push(item.url)}
+                      isActive={item.isActive}
+                      className={
+                        item.isActive
+                          ? "bg-gray-900 text-white hover:bg-gray-900 hover:text-white"
+                          : "hover:bg-gray-100"
+                      }
+                    >
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
