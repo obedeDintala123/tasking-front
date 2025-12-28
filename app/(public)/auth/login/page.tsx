@@ -42,7 +42,11 @@ export default function LoginPage() {
     },
 
     onSuccess: (data) => {
-      setCookie("token", data.token, { path: "/" });
+      setCookie("token", data.token, {
+        secure: true,
+        sameSite: "none",
+        path: "/",
+      });
       toast.success("Login successful");
       router.push("/dashboard");
     },
@@ -84,7 +88,11 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form method="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          method="POST"
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4"
+        >
           {/* Email Field */}
           <div className="space-y-2">
             <label
