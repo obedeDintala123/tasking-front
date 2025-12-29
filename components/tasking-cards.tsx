@@ -1,6 +1,6 @@
 "use client";
 
-import { priorityColors, TaskCardProps } from "@/types/types";
+import { priorityColors, Task, TaskCardProps } from "@/types/types";
 import {
   Card,
   CardContent,
@@ -20,7 +20,7 @@ import {
   Plus,
   Square,
 } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, XAxis } from "recharts";
 import {
   ChartContainer,
   ChartTooltip,
@@ -41,7 +41,7 @@ export const TaskCard = ({
   footer = "progress",
   icon: Icon,
   numbers,
-}: TaskCardProps & {loading?: boolean}) => {
+}: TaskCardProps & { loading?: boolean }) => {
   return (
     <Card loading={loading} className="py-4">
       <div className="flex items-center justify-between px-4">
@@ -49,7 +49,7 @@ export const TaskCard = ({
         {Icon && (
           <div className="p-2 rounded-full flex items-center justify-center bg-gray-100">
             <Icon className="size-4" />
-          </div> 
+          </div>
         )}
       </div>
 
@@ -97,40 +97,22 @@ export const TaskCard = ({
   );
 };
 
-export const TaskAnalysis = ({loading = false}) => {
-  const chartData = [
-    { day: "monday", tasks: 10, fill: "var(--color-tasking-primary-00)" },
-    { day: "tuesday", tasks: 200, fill: "var(--color-tasking-primary-10)" },
-    { day: "wednesday", tasks: 275, fill: "var(--color-tasking-primary-20)" },
-    { day: "thursday", tasks: 173, fill: "var(--color-tasking-primary-30)" },
-    { day: "friday", tasks: 90, fill: "var(--color-tasking-primary-40)" },
-  ];
-
-  const chartConfig = {
-    tasks: {
-      label: "Tasks",
-    },
-    monday: {
-      label: "Monday",
-      color: "var(--chart-1)",
-    },
-    tuesday: {
-      label: "Tuesday",
-      color: "var(--chart-2)",
-    },
-    wednesday: {
-      label: "Wednesday",
-      color: "var(--chart-3)",
-    },
-    thursday: {
-      label: "Thursday",
-      color: "var(--chart-4)",
-    },
-    friday: {
-      label: "Friday",
-      color: "var(--chart-5)",
-    },
+export const TaskAnalysis = ({ loading = false, chartData = [] }) => {
+  const chartConfig: ChartConfig = {
+    tasks: { label: "Tasks" },
+    sunday: { label: "Sun", color: "var(--color-tasking-primary-00)" },
+    monday: { label: "Mon", color: "var(--color-tasking-primary-10)" },
+    tuesday: { label: "Tue", color: "var(--color-tasking-primary-20)" },
+    wednesday: { label: "Wed", color: "var(--color-tasking-primary-30)" },
+    thursday: { label: "Thu", color: "var(--color-tasking-primary-40)" },
+    friday: { label: "Fri", color: "var(--color-tasking-primary-10)" },
+    saturday: { label: "Sat", color: "var(--color-tasking-primary-20)" },
   } satisfies ChartConfig;
+
+  const chartDataFormatted = chartData.map((item: any) => ({
+    ...item,
+    day: item.day.toLowerCase(), 
+  }));
 
   return (
     <Card loading={loading}>
@@ -138,8 +120,7 @@ export const TaskAnalysis = ({loading = false}) => {
         <CardTitle>Task Analysis</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-full h-32">
-          {" "}
+        <div className="w-full h-36">
           <ChartContainer className="h-36 w-full" config={chartConfig}>
             <BarChart
               data={chartData}
@@ -154,14 +135,24 @@ export const TaskAnalysis = ({loading = false}) => {
                 tickMargin={10}
                 axisLine={false}
                 tickFormatter={(value) =>
-                  chartConfig[value as keyof typeof chartConfig]?.label
+                  chartConfig[value as keyof typeof chartConfig]?.label ?? value
                 }
               />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="tasks" radius={12} activeIndex={2} />
+              <Bar dataKey="tasks" radius={12}>
+                {chartDataFormatted.map((entry) => (
+                  <Cell
+                    key={entry.day}
+                    fill={
+                      chartConfig[entry.day as keyof typeof chartConfig]
+                        ?.color || "#000"
+                    }
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ChartContainer>
         </div>
@@ -170,7 +161,7 @@ export const TaskAnalysis = ({loading = false}) => {
   );
 };
 
-export const TaskTimeLine = ({loading = false}) => {
+export const TaskTimeLine = ({ loading = false }) => {
   const { data: tasks } = useTasks();
 
   return (
@@ -260,7 +251,7 @@ export const TaskTimeLine = ({loading = false}) => {
   );
 };
 
-export const TaskSchedule = ({loading = false}) => {
+export const TaskSchedule = ({ loading = false }) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const shedules = [
     {
@@ -313,7 +304,7 @@ export const TaskSchedule = ({loading = false}) => {
   );
 };
 
-export const TaskTimeTracker = ({loading = false}) => {
+export const TaskTimeTracker = ({ loading = false }) => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -348,7 +339,10 @@ export const TaskTimeTracker = ({loading = false}) => {
   };
 
   return (
-    <Card loading={loading} className="bg-[#2a2d35] border-none text-white relative">
+    <Card
+      loading={loading}
+      className="bg-[#2a2d35] border-none text-white relative"
+    >
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-normal text-gray-300">
@@ -396,22 +390,13 @@ export const TaskTimeTracker = ({loading = false}) => {
   );
 };
 
-export const TaskToday = ({loading = false}) => {
-  const tasks = [
-    {
-      id: 1,
-      title: "Create design system",
-      description: "Adjust text and color at Landing page",
-      progress: 81,
-    },
-    {
-      id: 2,
-      title: "Feedback at Mobile apps",
-      description: "Adjust text and color at Landing page",
-      progress: 81,
-    },
-  ];
-
+export const TaskToday = ({
+  loading = false,
+  tasks = [],
+}: {
+  loading?: boolean;
+  tasks: Task[];
+}) => {
   return (
     <Card loading={loading} className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -427,59 +412,24 @@ export const TaskToday = ({loading = false}) => {
         </Button>{" "}
       </CardHeader>
       <CardContent className="space-y-6 pb-6">
-        {/* First Task */}
         <div className="space-y-3">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-1">
-              {tasks[0].title}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {tasks[0].description}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Progress value={tasks[0].progress} className="flex-1 h-2" />
-            <span className="text-sm font-medium text-muted-foreground min-w-[3ch]">
-              {tasks[0].progress}%
-            </span>
-          </div>
-        </div>
-
-        {/* Meeting Badge */}
-        {/* <div className="relative bg-indigo-500 rounded-full py-4 px-6 flex items-center gap-4">
-          <div className="bg-slate-900 rounded-full w-12 h-12 flex flex-col items-center justify-center text-white flex-shrink-0">
-            <span className="text-xl font-bold leading-none">8</span>
-            <span className="text-xs leading-none">Tue</span>
-          </div>
-          <span className="text-white text-lg font-medium flex-1">
-            Meeting with Reza
-          </span>
-          <div className="flex items-center gap-2">
-            <button className="bg-indigo-400/50 hover:bg-indigo-400/70 rounded-full p-2 text-white transition-colors">
-              <MoreVertical className="h-5 w-5" />
-            </button>
-            <button className="bg-indigo-400/50 hover:bg-indigo-400/70 rounded-full p-2 text-white transition-colors">
-              <Copy className="h-5 w-5" />
-            </button>
-          </div>
-        </div> */}
-
-        {/* Second Task */}
-        <div className="space-y-3">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-1">
-              {tasks[1].title}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {tasks[1].description}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Progress value={tasks[1].progress} className="flex-1 h-2" />
-            <span className="text-sm font-medium text-muted-foreground min-w-[3ch]">
-              {tasks[1].progress}%
-            </span>
-          </div>
+          {tasks.length === 0 ? (
+            <p className="text-gray-500">No tasks for today.</p>
+          ) : (
+            tasks.map((task, index) => (
+              <div
+                key={task.id || index}
+                className="p-4 bg-gray-50 rounded-lg border"
+              >
+                <h3 className="text-lg font-semibold text-foreground mb-1">
+                  {task.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {task.description}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

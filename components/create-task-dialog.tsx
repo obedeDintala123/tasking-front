@@ -289,7 +289,14 @@ export function CreateTaskDialog({
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          if (!date) return;
+
+                          const fixedDate = new Date(date);
+                          fixedDate.setHours(12, 0, 0, 0); // 👈 MUITO IMPORTANTE
+
+                          field.onChange(fixedDate);
+                        }}
                       />
                     </PopoverContent>
                   </Popover>
@@ -322,7 +329,14 @@ export function CreateTaskDialog({
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          if (!date) return;
+
+                          const fixedDate = new Date(date);
+                          fixedDate.setHours(12, 0, 0, 0);
+
+                          field.onChange(fixedDate);
+                        }}
                       />
                     </PopoverContent>
                   </Popover>

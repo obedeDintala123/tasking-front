@@ -60,7 +60,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <TaskAnalysis loading={isLoading} />
+          <TaskAnalysis loading={isLoading} chartData={metrics?.tasksPerDay ?? []} />
         </article>
         <article className="grid">
           <TaskTimeLine loading={isLoading} />
@@ -73,7 +73,7 @@ export default function Dashboard() {
         </article>
         <article className="grid md:grid-cols-2 gap-4">
           <TaskTimeTracker loading={isLoading} />
-          <TaskToday loading={isLoading} />
+          <TaskToday tasks={metrics?.taskForToday ?? []} loading={isLoading} />
         </article>
       </section>
     </div>
