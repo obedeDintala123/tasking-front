@@ -1,11 +1,11 @@
 "use client";
 
-import { Task } from "@/types/types";
+import { Task, User } from "@/types/types";
 import { api } from "./api";
 import { useQuery } from "@tanstack/react-query";
 
 export const useMe = () => {
-  return useQuery({
+  return useQuery<User>({
     queryKey: ["me"],
     queryFn: async () => {
       const response = await api.get("/me");

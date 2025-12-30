@@ -6,6 +6,28 @@ export const taskSchema = z.object({
   description: z.string().optional(),
 });
 
+// --- User types -----
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  team: Team | null;
+  tasks: Task[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Team {
+  id: string;
+  name: string;
+  users: User[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // --- Tasking Cards Types -----
 
 export interface TaskCardProps {
@@ -14,6 +36,8 @@ export interface TaskCardProps {
   description?: string;
   icon?: LucideIcon;
   item: any[];
+  loading?: boolean;
+
   footer: "progress" | "avatar";
 }
 

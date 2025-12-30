@@ -18,12 +18,23 @@ import {
   Clock,
   CalendarDays,
   Settings,
+  Plus,
+  NotebookText,
+  UsersRound,
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import { useMe } from "@/lib/requests";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useState } from "react";
+import { CreateTeamDialog } from "./create-team-dialog";
 
 const menuItems = [
   {
@@ -54,6 +65,20 @@ export function AppSidebar() {
   const { data: user } = useMe();
   const { toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const menuCreateItems = [
+    {
+      title: "Task",
+      icon: NotebookText,
+      onclick: () => {},
+    },
+    {
+      title: "Team",
+      icon: UsersRound,
+      onclick: () => setIsOpen(true),
+    },
+  ];
 
   return (
     <Sidebar>
@@ -118,6 +143,22 @@ export function AppSidebar() {
                 ))}
               </SidebarMenu>
             )}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center justify-center text-white mt-2 gap-2 text-sm w-full p-2 rounded-md bg-tasking-primary-00">
+                Create <Plus className="size-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-50 mt-2">
+                {menuCreateItems.map((item) => (
+                  <DropdownMenuItem key={item.title} onClick={item.onclick}>
+                    <div className="flex items-center gap-2">
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -131,6 +172,7 @@ export function AppSidebar() {
           <span>Settings</span>
         </Link>
       </SidebarFooter>
+      <CreateTeamDialog open={isOpen} onOpenChange={setIsOpen} />
     </Sidebar>
   );
 }

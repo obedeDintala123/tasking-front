@@ -13,8 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   ArrowUpRight,
   CalendarIcon,
-  Copy,
-  MoreVertical,
   Pause,
   Play,
   Plus,
@@ -30,8 +28,8 @@ import {
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import { useEffect, useState } from "react";
-import { Progress } from "./ui/progress";
 import { useTasks } from "@/lib/requests";
+import { CreateTeamDialog } from "./create-team-dialog";
 
 export const TaskCard = ({
   loading,
@@ -41,7 +39,8 @@ export const TaskCard = ({
   footer = "progress",
   icon: Icon,
   numbers,
-}: TaskCardProps & { loading?: boolean }) => {
+}: TaskCardProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Card loading={loading} className="py-4">
       <div className="flex items-center justify-between px-4">
@@ -87,12 +86,17 @@ export const TaskCard = ({
               </Avatar>
             ))
           ) : (
-            <Button className="text-sm flex items-center justify-center rounded-full p-2 bg-gray-100 w-full text-tasking-primary-40">
+            <Button
+              onClick={() => setIsOpen(true)}
+              className="text-sm flex items-center justify-center rounded-full p-2 bg-gray-100 w-full text-tasking-primary-40"
+            >
               <Plus className="size-4 mr-2" /> Add Member
             </Button>
           )}
         </CardFooter>
       )}
+
+      <CreateTeamDialog open={isOpen} onOpenChange={setIsOpen} addMember />
     </Card>
   );
 };
@@ -111,7 +115,7 @@ export const TaskAnalysis = ({ loading = false, chartData = [] }) => {
 
   const chartDataFormatted = chartData.map((item: any) => ({
     ...item,
-    day: item.day.toLowerCase(), 
+    day: item.day.toLowerCase(),
   }));
 
   return (

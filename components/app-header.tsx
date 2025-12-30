@@ -4,8 +4,15 @@ import { useMe } from "@/lib/requests";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SidebarTrigger } from "./ui/sidebar";
-import { Menu } from "lucide-react";
+import { ChevronDown, Menu, User2 } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Separator } from "./ui/separator";
 export const AppHeader = () => {
   const dias = [
     "Sunday",
@@ -40,6 +47,33 @@ export const AppHeader = () => {
             </p>
           </div>
         </div>
+      )}
+
+      {!isMobile && user?.team && (
+
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center justify-center outline-none gap-2 text-base p-2 px-6 text-tasking-primary-40 rounded-full">
+            <span className="font-normal">
+              {user?.team?.name.charAt(0).toLocaleUpperCase() +
+                user?.team?.name.slice(1)}
+            </span>
+            <ChevronDown className="size-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <div className="px-2">
+              <span className="text-sm">Members</span>
+              <Separator />
+            </div>
+            {user.team.users.map((item, index) => (
+              <DropdownMenuItem key={index}>
+                <div className="flex items-center gap-2">
+                  <User2 />
+                  <span className="text-xs">{item.email}</span>
+                </div>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
 
       <div className="flex items-start gap-2">
