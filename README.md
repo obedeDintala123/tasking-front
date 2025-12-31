@@ -1,4 +1,5 @@
-![Capa do Projeto](images/capa.png)
+<img width="1920" height="869" alt="capa" src="https://github.com/user-attachments/assets/167c34ef-e855-45b9-b904-3e9de667fb49" />
+
 
 # Tasking
 
