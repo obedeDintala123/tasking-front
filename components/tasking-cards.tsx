@@ -1,6 +1,6 @@
 "use client";
 
-import { priorityColors, Task, TaskCardProps } from "@/types/types";
+import { Priority, priorityColors, Task, TaskCardProps } from "@/types/types";
 import {
   Card,
   CardContent,
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   ArrowUpRight,
   CalendarIcon,
+  Clock,
   Pause,
   Play,
   Plus,
@@ -30,6 +31,8 @@ import { Calendar } from "./ui/calendar";
 import { useEffect, useState } from "react";
 import { useTasks } from "@/lib/requests";
 import { CreateTeamDialog } from "./create-team-dialog";
+import { Badge } from "./ui/badge";
+import { labels } from "@/lib/utils";
 
 export const TaskCard = ({
   loading,
@@ -421,16 +424,69 @@ export const TaskToday = ({
             <p className="text-gray-500">No tasks for today.</p>
           ) : (
             tasks.map((task, index) => (
-              <div
-                key={task.id || index}
-                className="p-4 bg-gray-50 rounded-lg border"
-              >
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                  {task.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
+              <div key={task.id || index} className="p-4 pl-5 border rounded-md">
+                {/* Header with Title and Menu */}
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <h3
+                      className="flex-1 font-semibold leading-tight text-balance"
+                      style={{ color: "#323339" }}
+                    >
+                      {task.title}
+                    </h3>
+                    <Badge
+                      className={`${
+                        task.priority === Priority.HIGH
+                          ? "bg-red-400"
+                          : task.priority === Priority.MEDIUM
+                          ? "bg-tasking-primary-10"
+                          : "bg-tasking-primary-30"
+                      }`}
+                    >
+                      {labels(task.priority!)}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p
+                  className="mb-3 line-clamp-1 text-sm"
+                  style={{ color: "#6b6b75" }}
+                >
                   {task.description}
                 </p>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between">
+                  <div
+                    className="flex items-center gap-1.5 text-xs"
+                    style={{ color: "#6b6b75" }}
+                  >
+                    <Clock className="size-3.5" />
+                    <span>
+                      {task.startHour} - {""}
+                      {task.endHour}
+                    </span>
+                  </div>
+
+                  <div
+                    className="flex items-center gap-1.5 text-xs"
+                    style={{ color: "#6b6b75" }}
+                  >
+                    <CalendarIcon className="size-3.5" />
+                    <span>
+                      {new Date(task.startDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}{" "}
+                      - {""}
+                      {new Date(task.endDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </div>
               </div>
             ))
           )}

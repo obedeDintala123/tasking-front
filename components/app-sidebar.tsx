@@ -21,6 +21,7 @@ import {
   Plus,
   NotebookText,
   UsersRound,
+  User2,
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
@@ -35,6 +36,7 @@ import {
 } from "./ui/dropdown-menu";
 import { useState } from "react";
 import { CreateTeamDialog } from "./create-team-dialog";
+import { CreateTaskDialog } from "./create-task-dialog";
 
 const menuItems = [
   {
@@ -66,17 +68,38 @@ export function AppSidebar() {
   const { toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
+  const [createTask, setCreateTask] = useState(false);
+  const [addMember, setAddMember] = useState(false);
 
   const menuCreateItems = [
     {
       title: "Task",
       icon: NotebookText,
-      onclick: () => {},
+      onclick: () => {
+        setAddMember(false);
+        setIsOpen(false);
+        setCreateTask(true);
+      },
     },
+
     {
       title: "Team",
       icon: UsersRound,
-      onclick: () => setIsOpen(true),
+      onclick: () => {
+        setAddMember(false);
+        setIsOpen(true);
+        setCreateTask(false);
+      },
+    },
+
+    {
+      title: "Member",
+      icon: User2,
+      onclick: () => {
+        setAddMember(true);
+        setIsOpen(true);
+        setCreateTask(false);
+      },
     },
   ];
 
@@ -172,7 +195,14 @@ export function AppSidebar() {
           <span>Settings</span>
         </Link>
       </SidebarFooter>
-      <CreateTeamDialog open={isOpen} onOpenChange={setIsOpen} />
+
+      <CreateTeamDialog
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        addMember={addMember}
+      />
+
+      <CreateTaskDialog open={createTask} setOpen={setCreateTask} />
     </Sidebar>
   );
 }

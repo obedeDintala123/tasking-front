@@ -361,7 +361,7 @@ function TaskCard({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="opacity-0 transition-opacity group-hover:opacity-100"
+     
                 style={{ color: "#6b6b75" }}
               >
                 <MoreVertical className="size-4" />

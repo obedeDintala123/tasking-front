@@ -43,3 +43,23 @@ export const useTaskById = (id: string) => {
     },
   });
 };
+
+export const useTeam = () => {
+  return useQuery({
+    queryKey: ["team"],
+    queryFn: async () => {
+      const response = await api.get("/team");
+      return response.data;
+    },
+  });
+};
+
+export const useTeams = (id: string) => {
+  return useQuery({
+    queryKey: ["teams", id],
+    queryFn: async () => {
+      const response = await api.get(`/teams/${id}`);
+      return response.data;
+    },
+  });
+};

@@ -4,7 +4,7 @@ import { useMe } from "@/lib/requests";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SidebarTrigger } from "./ui/sidebar";
-import { ChevronDown, Menu, User2 } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 import {
   DropdownMenu,
@@ -24,8 +24,19 @@ export const AppHeader = () => {
     "Saturday",
   ];
 
-  const { data: user, isLoading } = useMe();
+  const colors = [
+    "bg-tasking-primary-00",
+    "bg-tasking-primary-10",
+    "bg-tasking-primary-20",
+    "bg-tasking-primary-30",
+  ];
 
+  function randomColor() {
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  const { data: user, isLoading } = useMe();
+ 
   const isMobile = useIsMobile();
 
   return (
@@ -49,8 +60,7 @@ export const AppHeader = () => {
         </div>
       )}
 
-      {!isMobile && user?.team && (
-
+      {user?.team && (
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center justify-center outline-none gap-2 text-base p-2 px-6 text-tasking-primary-40 rounded-full">
             <span className="font-normal">
@@ -64,14 +74,23 @@ export const AppHeader = () => {
               <span className="text-sm">Members</span>
               <Separator />
             </div>
-            {user.team.users.map((item, index) => (
-              <DropdownMenuItem key={index}>
-                <div className="flex items-center gap-2">
-                  <User2 />
-                  <span className="text-xs">{item.email}</span>
-                </div>
-              </DropdownMenuItem>
-            ))}
+            {user.team.users.map((item, index) => {
+              const color = randomColor();
+              return (
+                <DropdownMenuItem key={index}>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center ${color} text-base`}
+                    >
+                      {item.firstName.charAt(0).toUpperCase()}{" "}
+                    </div>
+                    <span className="text-xs">
+                      {item.firstName} {item.lastName}
+                    </span>
+                  </div>
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
       )}

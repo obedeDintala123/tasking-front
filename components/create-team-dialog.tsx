@@ -17,7 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
-import { useMe } from "@/lib/requests";
+import { useMe, useTeam } from "@/lib/requests";
+import { useEffect } from "react";
 
 interface CreateTeamDialogProps {
   open: boolean;
@@ -33,9 +34,17 @@ const TeamSchema = z.object({
   currentEmail: z.string().optional(),
 });
 
+const AddMemberSchema = z.object({
+  memberEmails: z
+    .array(z.string().email())
+    .min(1, { message: "At least one member is required" }),
+  currentEmail: z.string().optional(),
+});
+
 const EmailSchema = z.string().email();
 
 type TeamFormData = z.infer<typeof TeamSchema>;
+type AddMemberFormData = z.infer<typeof AddMemberSchema>;
 
 export function CreateTeamDialog({
   open,
@@ -45,15 +54,15 @@ export function CreateTeamDialog({
   const { refetch } = useMe();
 
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    setValue,
-    getValues,
-    watch,
-    setError,
-    clearErrors,
+    register: registerTeam,
+    handleSubmit: handleSubmitTeam,
+    formState: { errors: teamErrors },
+    reset: resetTeam,
+    setValue: setTeamValue,
+    getValues: getTeamValues,
+    watch: watchTeam,
+    setError: setTeamError,
+    clearErrors: clearTeamErrors,
   } = useForm<TeamFormData>({
     resolver: zodResolver(TeamSchema),
     defaultValues: {
@@ -63,6 +72,47 @@ export function CreateTeamDialog({
     },
     mode: "onChange",
   });
+
+  const {
+    register: registerMember,
+    handleSubmit: handleSubmitMember,
+    formState: { errors: memberErrors },
+    reset: resetMember,
+    setValue: setMemberValue,
+    getValues: getMemberValues,
+    watch: watchMember,
+    setError: setMemberError,
+    clearErrors: clearMemberErrors,
+  } = useForm<AddMemberFormData>({
+    resolver: zodResolver(AddMemberSchema),
+    defaultValues: {
+      memberEmails: [],
+      currentEmail: "",
+    },
+    mode: "onChange",
+  });
+
+  const { data: team } = useTeam();
+
+  // Choose form helpers according to dialog mode
+  const handleSubmitFn = addMember ? handleSubmitMember : handleSubmitTeam;
+  const errors = addMember ? memberErrors : teamErrors;
+  const resetFn = addMember ? resetMember : resetTeam;
+
+  const teamMemberEmails = watchTeam("memberEmails");
+  const memberEmailsOnly = watchMember("memberEmails");
+
+  const memberEmails = addMember
+    ? memberEmailsOnly ?? []
+    : teamMemberEmails ?? [];
+
+  useEffect(() => {
+    if (addMember) {
+      resetMember({ memberEmails: [], currentEmail: "" });
+    } else {
+      resetTeam({ teamName: "", memberEmails: [], currentEmail: "" });
+    }
+  }, [team, addMember, resetMember, resetTeam]);
 
   const createTeam = useMutation({
     mutationFn: async (data: TeamFormData) => {
@@ -74,7 +124,7 @@ export function CreateTeamDialog({
     onSuccess: () => {
       refetch();
       toast.success("Team created successfully");
-      reset();
+      resetFn();
       onOpenChange(false);
     },
     onError: (error) => {
@@ -83,14 +133,74 @@ export function CreateTeamDialog({
     },
   });
 
+  const addMemberMutation = useMutation({
+    mutationFn: async (data: AddMemberFormData) => {
+      const response = await api.patch(`/team/${team?.id}/member`, {
+        memberEmails: data.memberEmails,
+      });
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.notFound && data.notFound.length > 0) {
+        toast.warning(
+          `These emails were not found and an invitation was sent: ${data.notFound.join(
+            ", "
+          )}`
+        );
+      } else {
+        toast.success("Member added successfully");
+      }
+
+      refetch();
+      resetFn();
+      onOpenChange(false);
+    },
+
+    onError: (error) => {
+      console.error(error);
+      toast.error("Failed to add member");
+    },
+  });
+
   const handleAddEmail = () => {
-    const currentEmail = getValues("currentEmail");
+    if (addMember) {
+      const currentEmail = getMemberValues("currentEmail");
+      if (!currentEmail) return;
+
+      const existingEmails = getMemberValues("memberEmails") ?? [];
+
+      if (existingEmails.includes(currentEmail)) {
+        setMemberError("currentEmail", {
+          type: "manual",
+          message: "Email already exists",
+        });
+        return;
+      }
+
+      const parsed = EmailSchema.safeParse(currentEmail);
+      if (!parsed.success) {
+        setMemberError("currentEmail", {
+          type: "manual",
+          message: "Invalid email address",
+        });
+        return;
+      }
+
+      clearMemberErrors("currentEmail");
+      setMemberValue("memberEmails", [...existingEmails, currentEmail]);
+      setMemberValue("currentEmail", "");
+      return;
+    }
+
+    // CREATE TEAM MODE
+    const currentEmail = getTeamValues("currentEmail");
     if (!currentEmail) return;
 
-    const existingEmails = getValues("memberEmails") || [];
+    const existingEmails = getTeamValues("memberEmails") ?? [];
 
     if (existingEmails.includes(currentEmail)) {
-      setError("currentEmail", {
+      setTeamError("currentEmail", {
         type: "manual",
         message: "Email already exists",
       });
@@ -99,33 +209,46 @@ export function CreateTeamDialog({
 
     const parsed = EmailSchema.safeParse(currentEmail);
     if (!parsed.success) {
-      setError("currentEmail", {
+      setTeamError("currentEmail", {
         type: "manual",
         message: "Invalid email address",
       });
       return;
     }
 
-    clearErrors("currentEmail");
-    setValue("memberEmails", [...existingEmails, currentEmail]);
-    setValue("currentEmail", "");
+    clearTeamErrors("currentEmail");
+    setTeamValue("memberEmails", [...existingEmails, currentEmail]);
+    setTeamValue("currentEmail", "");
   };
 
   const handleRemoveEmail = (email: string) => {
-    const existingEmails = getValues("memberEmails") || [];
-    if (existingEmails.includes(email)) {
-      const updatedEmails = existingEmails.filter((e) => e !== email);
-      setValue("memberEmails", updatedEmails);
+    if (addMember) {
+      const emails = getMemberValues("memberEmails") ?? [];
+      setMemberValue(
+        "memberEmails",
+        emails.filter((e) => e !== email)
+      );
+      return;
     }
+
+    const emails = getTeamValues("memberEmails") ?? [];
+    setTeamValue(
+      "memberEmails",
+      emails.filter((e) => e !== email)
+    );
   };
 
   const handleCancel = () => {
-    reset();
+    resetFn();
     onOpenChange(false);
   };
 
-  const onSubmit = (data: TeamFormData) => {
-    createTeam.mutate(data);
+  const onSubmit = (data: TeamFormData | AddMemberFormData) => {
+    if (addMember) {
+      addMemberMutation.mutate(data as AddMemberFormData);
+    } else {
+      createTeam.mutate(data as TeamFormData);
+    }
   };
 
   return (
@@ -145,34 +268,43 @@ export function CreateTeamDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form
+          onSubmit={handleSubmitFn(onSubmit, (errors) => {
+            console.error(errors);
+          })}
+          className="space-y-5"
+        >
           {/* Team Name Input */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="teamName"
-              className="text-sm font-medium"
-              style={{ color: "#323339" }}
-            >
-              Team Name
-              <span className="text-red-500" aria-label="required">
-                {" "}
-                *
-              </span>
-            </Label>
-            <Input
-              id="teamName"
-              {...register("teamName")}
-              placeholder="Enter team name"
-              className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm transition-colors focus:border-transparent focus:bg-white focus:outline-none"
-              aria-invalid={!!errors.teamName}
-              aria-describedby={errors.teamName ? "teamName-error" : undefined}
-            />
-            {errors.teamName && (
-              <p id="teamName-error" className="text-xs text-red-500">
-                {errors.teamName.message}
-              </p>
-            )}
-          </div>
+          {!addMember && (
+            <div className="space-y-2">
+              <Label
+                htmlFor="teamName"
+                className="text-sm font-medium"
+                style={{ color: "#323339" }}
+              >
+                Team Name
+                <span className="text-red-500" aria-label="required">
+                  {" "}
+                  *
+                </span>
+              </Label>
+              <Input
+                id="teamName"
+                {...registerTeam("teamName")}
+                placeholder="Enter team name"
+                className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm transition-colors focus:border-transparent focus:bg-white focus:outline-none"
+                aria-invalid={!!teamErrors.teamName}
+                aria-describedby={
+                  teamErrors.teamName ? "teamName-error" : undefined
+                }
+              />
+              {teamErrors.teamName && (
+                <p id="teamName-error" className="text-xs text-red-500">
+                  {teamErrors.teamName.message}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label
@@ -190,9 +322,11 @@ export function CreateTeamDialog({
               <Input
                 id="currentEmail"
                 type="email"
-                {...register("currentEmail")}
+                {...(addMember
+                  ? registerMember("currentEmail")
+                  : registerTeam("currentEmail"))}
                 placeholder="Enter email address"
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     handleAddEmail();
@@ -228,16 +362,16 @@ export function CreateTeamDialog({
             )}
           </div>
 
-          {watch("memberEmails").length > 0 && (
+          {memberEmails.length > 0 && (
             <div className="space-y-2">
               <Label
                 className="text-sm font-medium"
                 style={{ color: "#323339" }}
               >
-                Team Members ({watch("memberEmails").length})
+                Team Members ({memberEmails.length})
               </Label>
               <div className="flex flex-wrap gap-2 rounded-lg bg-gray-50 p-3">
-                {watch("memberEmails").map((email) => (
+                {memberEmails.map((email) => (
                   <div
                     key={email}
                     className="flex items-center gap-2 rounded-full px-3 py-1"
@@ -267,18 +401,24 @@ export function CreateTeamDialog({
           {/* Action Buttons */}
           <div className="flex gap-3 pt-2">
             <Button
-              disabled={!!errors.teamName || watch("memberEmails").length === 0}
+              disabled={
+                addMember
+                  ? memberEmails.length === 0 || addMemberMutation.isPending
+                  : !!teamErrors.teamName || createTeam.isPending
+              }
               type="submit"
               className="flex-1 rounded-lg font-medium text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: "#8098f0",
               }}
             >
-              {!addMember && createTeam.isPending
+              {addMember
+                ? addMemberMutation.isPending
+                  ? "Adding..."
+                  : "Add Members"
+                : createTeam.isPending
                 ? "Creating..."
                 : "Create Team"}
-
-             
             </Button>
             <Button
               type="button"
