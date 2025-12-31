@@ -1,3 +1,5 @@
+![Capa do Projeto](images/capa.png)
+
 # Tasking
 
 **Tasking** é um web app moderno de **gestão de tarefas e equipes**, focado em produtividade, colaboração e uma experiência limpa de dashboard.
